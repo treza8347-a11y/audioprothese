@@ -1157,9 +1157,12 @@
             <textarea name="message" placeholder="Décrivez brièvement vos symptômes ou vos questions..."></textarea>
           </div>
 
-          
+          <div class="form-check">
+            <input type="checkbox" name="rgpd" />
+            <label for="rgpd">J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <a href="#">politique de confidentialité</a>.</label>
+          </div>
 
-          <button class="btn-submit" id="submitBtn" >
+          <button class="btn-submit" id="submitBtn" onclick="submitForm()">
             Envoyer ma demande
           </button>
 
@@ -1217,101 +1220,38 @@
 </footer>
 
 <script>
-  // ── CONFIGURATION ──
-  // Remplacez par l'URL de votre Web App Google Apps Script déployé
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0HsgST_9y0cvyooYEhpaW40rFfzRlr24tRtmSOZmf85Bu12Hzl7lSvXJ8QK2abCE0_A/exec';
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHWcEauclesBmbYIki00Wxb4Z9zaOueUf5esGfcAUXWzzdeXSws1VntRmZGC7rsO5EHw/exec"; // <--- COLLEZ L'URL ICI
 
-  // ── FORM SUBMIT ──
-  async function submitForm() {
+  document.getElementById('audiSensForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     const btn = document.getElementById('submitBtn');
-    const msg = document.getElementById('formMessage');
-    msg.className = 'form-message'; msg.style.display = 'none';
-
-    const prenom = document.getElementById('prenom').value.trim();
-    const nom = document.getElementById('nom').value.trim();
-    const telephone = document.getElementById('telephone').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const motif = document.getElementById('motif').value;
-    const disponibilite = document.getElementById('disponibilite').value;
-    const age = document.getElementById('age').value.trim();
-    const message = document.getElementById('message').value.trim();
-    const rgpd = document.getElementById('rgpd').checked;
-
-    if (!prenom || !nom || !telephone || !email || !motif) {
-      msg.textContent = 'Veuillez remplir tous les champs obligatoires (*).';
-      msg.className = 'form-message error'; return;
-    }
-    if (!rgpd) {
-      msg.textContent = 'Veuillez accepter la politique de confidentialité.';
-      msg.className = 'form-message error'; return;
-    }
-    const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailReg.test(email)) {
-      msg.textContent = 'Veuillez saisir une adresse email valide.';
-      msg.className = 'form-message error'; return;
-    }
-
+    const msg = document.getElementById('formMsg');
+    
     btn.disabled = true;
-    btn.textContent = 'Envoi en cours…';
+    btn.innerText = "Envoi en cours...";
 
-    const formData = {
-      prenom, nom, telephone, email, age,
-      motif, disponibilite, message,
-      date: new Date().toLocaleString('fr-FR'),
-      source: 'Landing Page AudiSens'
-    };
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
 
-    try {
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(formData)
-      });
-      const result = await res.json();
-
-      if (result.status === 'success') {
-        msg.textContent = '✓ Votre demande a bien été envoyée ! Nous vous contactons dans les 24 heures.';
-        msg.className = 'form-message success';
-        ['prenom','nom','telephone','email','age','message'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('motif').value = '';
-        document.getElementById('disponibilite').value = '';
-        document.getElementById('rgpd').checked = false;
-      } else {
-        throw new Error('Erreur serveur');
-      }
-    } catch (e) {
-      msg.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous appeler directement.';
-      msg.className = 'form-message error';
-    } finally {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors', 
+      body: JSON.stringify(data)
+    })
+    .then(() => {
+      msg.innerText = "Merci ! Votre demande a été enregistrée.";
+      msg.style.display = "block";
+      msg.style.color = "#B8975A";
+      this.reset();
+    })
+    .catch(() => {
+      msg.innerText = "Erreur de connexion.";
+      msg.style.display = "block";
+    })
+    .finally(() => {
       btn.disabled = false;
-      btn.textContent = 'Envoyer ma demande';
-    }
-  }
-
-  // ── HAMBURGER MENU ──
-  function toggleMenu() {
-    const links = document.querySelector('.nav-links');
-    const isOpen = links.style.display === 'flex';
-    links.style.cssText = isOpen
-      ? ''
-      : 'display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(14,14,14,0.98);padding:2rem 5vw;gap:1.5rem;border-bottom:1px solid rgba(184,151,90,0.2)';
-  }
-
-  // ── SCROLL ANIMATIONS ──
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
+      btn.innerText = "Prendre rendez-vous";
     });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.service-card, .process-step, .testimonial-card, .about-features li').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(25px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
   });
 </script>
 </body>
