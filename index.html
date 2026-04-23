@@ -949,70 +949,77 @@
         <span>Responsive · HTML/CSS intégrés · Google Apps Script + Google Sheets</span>
       </div>
     </footer>
+<script>
+  const form = document.getElementById('leadForm');
+  const statusBox = document.getElementById('statusBox');
+  const submitBtn = document.getElementById('submitBtn');
 
-    <script>
-      const form = document.getElementById('leadForm');
-      const statusBox = document.getElementById('statusBox');
-      const submitBtn = document.getElementById('submitBtn');
+  function setLoading(isLoading) {
+    submitBtn.disabled = isLoading;
+    submitBtn.style.opacity = isLoading ? '0.7' : '1';
+    submitBtn.textContent = isLoading ? 'Envoi en cours...' : 'Envoyer ma demande';
+  }
 
-      function showStatus(message, type) {
-        statusBox.className = 'status ' + type;
-        statusBox.textContent = message;
+  function showStatus(message, type) {
+    statusBox.className = 'status ' + type;
+    statusBox.textContent = message;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    try {
+      statusBox.className = 'status';
+      statusBox.textContent = '';
+
+      const formData = Object.fromEntries(new FormData(form).entries());
+
+      if (!formData.nom || !formData.telephone || !formData.email) {
+        showStatus('Veuillez remplir Nom, Téléphone et Email.', 'error');
+        return;
       }
 
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
+      if (!formData.consentement) {
+        showStatus('Veuillez accepter le consentement.', 'error');
+        return;
+      }
 
-        statusBox.className = 'status';
-        statusBox.textContent = '';
+      if (
+        typeof google === 'undefined' ||
+        !google.script ||
+        !google.script.run
+      ) {
+        showStatus("La page n'est pas exécutée depuis Apps Script. Ouvrez l’URL du déploiement web app.", 'error');
+        return;
+      }
 
-        const formData = Object.fromEntries(new FormData(form).entries());
+      setLoading(true);
 
-        if (!formData.nom || !formData.telephone || !formData.email) {
-          showStatus('Veuillez remplir les champs obligatoires.', 'error');
-          return;
-        }
+      google.script.run
+        .withSuccessHandler(function (response) {
+          setLoading(false);
 
-        if (!formData.consentement) {
-          showStatus('Veuillez accepter le consentement pour continuer.', 'error');
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.7';
-        submitBtn.textContent = 'Envoi en cours...';
-
-        google.script.run
-          .withSuccessHandler(function(response) {
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = '1';
-            submitBtn.textContent = 'Envoyer ma demande';
-
-            if (response && response.success) {
-              showStatus(response.message || 'Votre demande a bien été envoyée.', 'success');
-              form.reset();
-            } else {
-              showStatus((response && response.message) || 'Une erreur est survenue.', 'error');
-            }
-          })
-          .withFailureHandler(function(error) {
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = '1';
-            submitBtn.textContent = 'Envoyer ma demande';
-            showStatus('Erreur technique : ' + (error.message || 'merci de réessayer.'), 'error');
-          })
-          .submitLead(formData);
-      });
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if(entry.isIntersecting){
-            entry.target.classList.add('visible');
+          if (response && response.success) {
+            showStatus(response.message || 'Votre demande a bien été envoyée.', 'success');
+            form.reset();
+          } else {
+            showStatus((response && response.message) || 'Une erreur est survenue côté serveur.', 'error');
           }
-        });
-      }, { threshold: 0.12 });
+        })
+        .withFailureHandler(function (error) {
+          setLoading(false);
+          showStatus('Erreur Apps Script : ' + (error && error.message ? error.message : 'merci de réessayer.'), 'error');
+          console.error('Apps Script failure:', error);
+        })
+        .submitLead(formData);
 
-      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
+    } catch (err) {
+      setLoading(false);
+      showStatus('Erreur JavaScript : ' + (err.message || err), 'error');
+      console.error('JS error:', err);
+    }
+  });
+</script>
+
   </body>
 </html>
