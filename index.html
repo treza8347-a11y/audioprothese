@@ -1,1258 +1,1018 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AudiSens | Centre Audioprothèse Premium</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --gold: #B8975A;
-      --gold-light: #D4B07A;
-      --gold-pale: #F5EDD8;
-      --dark: #0E0E0E;
-      --dark-2: #1A1A1A;
-      --dark-3: #252525;
-      --mid: #3A3A3A;
-      --muted: #7A7A7A;
-      --light: #F0EDE8;
-      --white: #FAFAF8;
-      --cream: #F7F3EC;
-    }
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centre Auditif Premium</title>
+    <style>
+      :root{
+        --bg:#07111f;
+        --bg-soft:#0b1728;
+        --surface:rgba(255,255,255,0.08);
+        --surface-2:rgba(255,255,255,0.04);
+        --text:#f4f8fc;
+        --muted:#a7b6c9;
+        --primary:#00c2ff;
+        --secondary:#7b61ff;
+        --accent:#e9f7ff;
+        --gold:#d5b06b;
+        --border:rgba(255,255,255,0.12);
+        --success:#38d39f;
+        --danger:#ff6b6b;
+        --shadow:0 20px 60px rgba(0,0,0,0.35);
+        --radius:22px;
+        --radius-sm:16px;
+        --max:1240px;
+      }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+      }
 
-    html { scroll-behavior: smooth; }
+      html{
+        scroll-behavior:smooth;
+      }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--dark);
-      color: var(--light);
-      overflow-x: hidden;
-    }
+      body{
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        color:var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(0,194,255,0.16), transparent 30%),
+          radial-gradient(circle at 85% 10%, rgba(123,97,255,0.18), transparent 25%),
+          radial-gradient(circle at 50% 100%, rgba(213,176,107,0.10), transparent 25%),
+          linear-gradient(180deg, #07111f 0%, #081321 42%, #0a1625 100%);
+        min-height:100vh;
+        overflow-x:hidden;
+      }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.2rem 5vw;
-      background: rgba(14,14,14,0.85);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(184,151,90,0.15);
-    }
-    .nav-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.7rem;
-      font-weight: 400;
-      letter-spacing: 0.06em;
-      color: var(--gold);
-    }
-    .nav-logo span { font-style: italic; color: var(--white); }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--muted); text-decoration: none; transition: color 0.3s;
-    }
-    .nav-links a:hover { color: var(--gold); }
-    .nav-cta {
-      background: var(--gold);
-      color: var(--dark);
-      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.65rem 1.6rem;
-      border: none; cursor: pointer; text-decoration: none;
-      transition: background 0.3s, transform 0.2s;
-    }
-    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-    .hamburger span { width: 24px; height: 1.5px; background: var(--gold); display: block; transition: 0.3s; }
+      body::before,
+      body::after{
+        content:"";
+        position:fixed;
+        inset:auto;
+        width:420px;
+        height:420px;
+        border-radius:50%;
+        filter:blur(80px);
+        z-index:-1;
+        opacity:0.18;
+      }
 
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: grid; grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 0 5vw;
-      padding-top: 80px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(184,151,90,0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-line {
-      position: absolute; top: 0; left: 50%;
-      width: 1px; height: 100%;
-      background: linear-gradient(to bottom, transparent 0%, rgba(184,151,90,0.2) 30%, rgba(184,151,90,0.2) 70%, transparent 100%);
-    }
-    .hero-content { position: relative; z-index: 2; padding-right: 6vw; }
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 2rem;
-    }
-    .hero-tag::before {
-      content: ''; width: 30px; height: 1px; background: var(--gold);
-    }
-    .hero-content h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3rem, 5.5vw, 5.2rem);
-      font-weight: 300;
-      line-height: 1.1;
-      color: var(--white);
-      margin-bottom: 1.5rem;
-    }
-    .hero-content h1 em {
-      font-style: italic;
-      color: var(--gold);
-    }
-    .hero-content p {
-      font-size: 1rem; font-weight: 300; line-height: 1.8;
-      color: var(--muted); max-width: 460px; margin-bottom: 3rem;
-    }
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--gold); color: var(--dark);
-      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 1rem 2.2rem; border: none; cursor: pointer; text-decoration: none;
-      display: inline-block; transition: all 0.3s;
-    }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-    .btn-outline {
-      background: transparent; color: var(--gold);
-      font-size: 0.8rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 1rem 2.2rem; border: 1px solid rgba(184,151,90,0.4); cursor: pointer;
-      text-decoration: none; display: inline-block; transition: all 0.3s;
-    }
-    .btn-outline:hover { border-color: var(--gold); background: rgba(184,151,90,0.06); }
-    .hero-visual {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    .hero-image-wrap {
-      position: relative;
-      width: 100%; max-width: 500px;
-    }
-    .hero-img-bg {
-      width: 100%; aspect-ratio: 4/5;
-      background: var(--dark-3);
-      border: 1px solid rgba(184,151,90,0.2);
-      position: relative; overflow: hidden;
-    }
-    .hero-img-inner {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(circle at 50% 40%, rgba(184,151,90,0.12) 0%, transparent 60%),
-        linear-gradient(135deg, var(--dark-3) 0%, var(--dark-2) 100%);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .hero-device-svg { width: 55%; opacity: 0.9; }
-    .hero-corner {
-      position: absolute;
-      width: 40px; height: 40px;
-    }
-    .hero-corner.tl { top: -1px; left: -1px; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
-    .hero-corner.br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
-    .hero-stats {
-      display: flex; gap: 0; margin-top: 2rem; width: 100%; max-width: 500px;
-    }
-    .hero-stat {
-      flex: 1; padding: 1.2rem 1.5rem;
-      border: 1px solid rgba(184,151,90,0.12);
-      border-right: none; background: var(--dark-2);
-    }
-    .hero-stat:last-child { border-right: 1px solid rgba(184,151,90,0.12); }
-    .hero-stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem; font-weight: 300;
-      color: var(--gold); display: block;
-    }
-    .hero-stat-label {
-      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); display: block; margin-top: 0.2rem;
-    }
+      body::before{
+        top:-120px;
+        left:-80px;
+        background:var(--primary);
+      }
 
-    /* ── MARQUEE ── */
-    .marquee-section {
-      padding: 1.2rem 0; background: var(--gold);
-      overflow: hidden; position: relative;
-    }
-    .marquee-track {
-      display: flex; gap: 4rem;
-      animation: marquee 28s linear infinite;
-      white-space: nowrap;
-    }
-    .marquee-item {
-      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--dark); display: flex; align-items: center; gap: 1rem; flex-shrink: 0;
-    }
-    .marquee-dot { width: 4px; height: 4px; background: var(--dark); border-radius: 50%; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      body::after{
+        bottom:-140px;
+        right:-100px;
+        background:var(--secondary);
+      }
 
-    /* ── SECTION COMMON ── */
-    .section { padding: 8rem 5vw; }
-    .section-label {
-      display: flex; align-items: center; gap: 0.8rem;
-      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 1.5rem;
-    }
-    .section-label::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
-    h2.section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 4vw, 4rem);
-      font-weight: 300; line-height: 1.15; color: var(--white);
-    }
-    h2.section-title em { font-style: italic; color: var(--gold); }
+      a{
+        text-decoration:none;
+        color:inherit;
+      }
 
-    /* ── ABOUT ── */
-    #about { background: var(--dark); }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; align-items: center; margin-top: 5rem; }
-    .about-text p {
-      font-size: 0.98rem; font-weight: 300; line-height: 2;
-      color: var(--muted); margin-bottom: 1.5rem;
-    }
-    .about-text p strong { color: var(--gold-light); font-weight: 500; }
-    .about-features { list-style: none; margin-top: 2rem; }
-    .about-features li {
-      display: flex; align-items: flex-start; gap: 1rem;
-      padding: 1rem 0; border-bottom: 1px solid rgba(184,151,90,0.1);
-      font-size: 0.9rem; color: var(--light); font-weight: 300;
-    }
-    .about-features li:first-child { border-top: 1px solid rgba(184,151,90,0.1); }
-    .feature-icon {
-      width: 32px; height: 32px; flex-shrink: 0;
-      background: rgba(184,151,90,0.1); border: 1px solid rgba(184,151,90,0.25);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; color: var(--gold);
-    }
-    .about-visual {
-      position: relative;
-    }
-    .about-quote {
-      background: var(--dark-2);
-      border: 1px solid rgba(184,151,90,0.18);
-      border-left: 3px solid var(--gold);
-      padding: 2.5rem;
-      position: relative;
-    }
-    .about-quote-mark {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 5rem; color: var(--gold); opacity: 0.3;
-      line-height: 1; position: absolute; top: 1rem; left: 1.5rem;
-    }
-    .about-quote blockquote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem; font-weight: 300; font-style: italic;
-      color: var(--white); line-height: 1.6; margin-top: 1rem;
-    }
-    .about-quote cite {
-      display: block; margin-top: 1.5rem;
-      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--gold); font-style: normal;
-    }
-    .about-accreditations {
-      display: flex; gap: 1rem; margin-top: 2rem;
-    }
-    .accred-badge {
-      flex: 1; padding: 1.2rem;
-      background: var(--dark-3);
-      border: 1px solid rgba(184,151,90,0.12);
-      text-align: center;
-    }
-    .accred-badge .num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem; color: var(--gold); display: block;
-    }
-    .accred-badge .lbl {
-      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--muted); margin-top: 0.3rem; display: block;
-    }
+      .container{
+        width:min(var(--max), calc(100% - 32px));
+        margin:0 auto;
+      }
 
-    /* ── SERVICES ── */
-    #services { background: var(--dark-2); }
-    .services-intro { max-width: 560px; }
-    .services-intro p { font-size: 0.95rem; font-weight: 300; line-height: 1.9; color: var(--muted); margin-top: 1.2rem; }
-    .services-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1.5px; margin-top: 5rem;
-      background: rgba(184,151,90,0.1);
-    }
-    .service-card {
-      background: var(--dark-2);
-      padding: 3rem 2.5rem;
-      transition: background 0.4s;
-      cursor: default;
-      position: relative; overflow: hidden;
-    }
-    .service-card::after {
-      content: '';
-      position: absolute; bottom: 0; left: 0;
-      width: 0; height: 2px; background: var(--gold);
-      transition: width 0.4s;
-    }
-    .service-card:hover { background: var(--dark-3); }
-    .service-card:hover::after { width: 100%; }
-    .service-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3.5rem; font-weight: 300; color: rgba(184,151,90,0.15);
-      line-height: 1; margin-bottom: 1.5rem;
-    }
-    .service-icon-wrap {
-      width: 52px; height: 52px;
-      border: 1px solid rgba(184,151,90,0.3);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1.5rem;
-    }
-    .service-card h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; font-weight: 400;
-      color: var(--white); margin-bottom: 1rem;
-    }
-    .service-card p {
-      font-size: 0.88rem; font-weight: 300; line-height: 1.8;
-      color: var(--muted);
-    }
-    .service-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
-    .service-tag {
-      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.3rem 0.8rem;
-      border: 1px solid rgba(184,151,90,0.25); color: var(--gold);
-    }
+      .header{
+        position:sticky;
+        top:0;
+        z-index:50;
+        backdrop-filter:blur(16px);
+        background:rgba(7,17,31,0.65);
+        border-bottom:1px solid rgba(255,255,255,0.06);
+      }
 
-    /* ── PROCESS ── */
-    #process { background: var(--dark); }
-    .process-steps { margin-top: 5rem; }
-    .process-step {
-      display: grid; grid-template-columns: 80px 1fr;
-      gap: 3rem; align-items: start;
-      padding: 3rem 0;
-      border-bottom: 1px solid rgba(184,151,90,0.1);
-      position: relative;
-    }
-    .process-step:first-child { border-top: 1px solid rgba(184,151,90,0.1); }
-    .step-num-wrap {
-      display: flex; flex-direction: column; align-items: center; gap: 0;
-    }
-    .step-num {
-      width: 56px; height: 56px;
-      border: 1px solid rgba(184,151,90,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem; color: var(--gold);
-    }
-    .step-connector {
-      width: 1px; flex: 1; min-height: 40px;
-      background: linear-gradient(to bottom, rgba(184,151,90,0.2), transparent);
-    }
-    .process-step:last-child .step-connector { display: none; }
-    .step-content h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.7rem; font-weight: 400; color: var(--white); margin-bottom: 1rem;
-    }
-    .step-content p {
-      font-size: 0.9rem; font-weight: 300; line-height: 1.9; color: var(--muted); max-width: 600px;
-    }
-    .step-detail {
-      display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;
-    }
-    .step-chip {
-      font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.4rem 1rem;
-      background: rgba(184,151,90,0.07); border: 1px solid rgba(184,151,90,0.2);
-      color: var(--gold-light);
-    }
+      .header-inner{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:20px;
+        padding:18px 0;
+      }
 
-    /* ── BRANDS ── */
-    #brands { background: var(--dark-2); padding: 6rem 5vw; }
-    .brands-header { text-align: center; margin-bottom: 4rem; }
-    .brands-header p { font-size: 0.9rem; color: var(--muted); margin-top: 1rem; }
-    .brands-grid {
-      display: grid; grid-template-columns: repeat(5, 1fr);
-      gap: 1.5px; background: rgba(184,151,90,0.08);
-    }
-    .brand-cell {
-      background: var(--dark-2);
-      padding: 2rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.3s;
-    }
-    .brand-cell:hover { background: var(--dark-3); }
-    .brand-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem; font-weight: 400;
-      color: rgba(240,237,232,0.35);
-      letter-spacing: 0.08em;
-      transition: color 0.3s;
-      text-align: center;
-    }
-    .brand-cell:hover .brand-name { color: var(--gold); }
+      .brand{
+        display:flex;
+        align-items:center;
+        gap:14px;
+      }
 
-    /* ── TESTIMONIALS ── */
-    #testimonials { background: var(--dark); }
-    .testimonials-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem; margin-top: 5rem;
-    }
-    .testimonial-card {
-      background: var(--dark-2);
-      border: 1px solid rgba(184,151,90,0.12);
-      padding: 2.5rem;
-      position: relative;
-    }
-    .testimonial-card::before {
-      content: '"';
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 4rem; color: var(--gold); opacity: 0.25;
-      position: absolute; top: 1rem; right: 1.5rem;
-      line-height: 1;
-    }
-    .stars { display: flex; gap: 3px; margin-bottom: 1.5rem; }
-    .star { color: var(--gold); font-size: 0.85rem; }
-    .testimonial-card blockquote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem; font-weight: 300; font-style: italic;
-      color: var(--light); line-height: 1.7; margin-bottom: 1.5rem;
-    }
-    .testimonial-author {
-      display: flex; align-items: center; gap: 1rem;
-      padding-top: 1.5rem; border-top: 1px solid rgba(184,151,90,0.1);
-    }
-    .author-avatar {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: rgba(184,151,90,0.15);
-      border: 1px solid rgba(184,151,90,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; font-weight: 500; color: var(--gold);
-    }
-    .author-info strong { display: block; font-size: 0.88rem; color: var(--white); font-weight: 500; }
-    .author-info span { font-size: 0.75rem; color: var(--muted); }
+      .brand-badge{
+        width:44px;
+        height:44px;
+        border-radius:14px;
+        background:linear-gradient(135deg, var(--primary), var(--secondary));
+        display:grid;
+        place-items:center;
+        box-shadow:0 12px 30px rgba(0,194,255,0.25);
+        font-size:20px;
+        font-weight:800;
+      }
 
-    /* ── CONTACT / FORM ── */
-    #contact { background: var(--dark-2); }
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; margin-top: 5rem; align-items: start; }
-    .contact-info h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem; font-weight: 300; color: var(--white); margin-bottom: 1rem;
-    }
-    .contact-info p { font-size: 0.9rem; font-weight: 300; line-height: 1.9; color: var(--muted); margin-bottom: 2.5rem; }
-    .contact-details { list-style: none; }
-    .contact-details li {
-      display: flex; align-items: flex-start; gap: 1rem;
-      padding: 1.2rem 0; border-bottom: 1px solid rgba(184,151,90,0.1);
-      font-size: 0.9rem; color: var(--light); font-weight: 300;
-    }
-    .contact-details li:first-child { border-top: 1px solid rgba(184,151,90,0.1); }
-    .contact-icon {
-      width: 36px; height: 36px; flex-shrink: 0;
-      background: rgba(184,151,90,0.08); border: 1px solid rgba(184,151,90,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; color: var(--gold);
-    }
-    .contact-detail-text strong { display: block; color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem; }
-    .contact-detail-text span { color: var(--light); }
+      .brand-text{
+        display:flex;
+        flex-direction:column;
+      }
 
-    /* Form */
-    .form-card {
-      background: var(--dark);
-      border: 1px solid rgba(184,151,90,0.18);
-      padding: 3rem;
-    }
-    .form-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem; font-weight: 300; color: var(--white); margin-bottom: 0.5rem;
-    }
-    .form-subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: 2.5rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .form-group { margin-bottom: 1.4rem; }
-    .form-group label {
-      display: block; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 0.6rem;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%; background: var(--dark-2);
-      border: 1px solid rgba(184,151,90,0.15);
-      color: var(--light); font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; font-weight: 300;
-      padding: 0.85rem 1.1rem; outline: none;
-      transition: border-color 0.3s; appearance: none;
-    }
-    .form-group select { cursor: pointer; }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { border-color: rgba(184,151,90,0.6); }
-    .form-group textarea { resize: vertical; min-height: 100px; }
-    .form-group input::placeholder,
-    .form-group textarea::placeholder { color: rgba(122,122,122,0.5); }
-    .form-group select option { background: var(--dark-2); }
-    .form-check {
-      display: flex; align-items: flex-start; gap: 0.8rem;
-      margin-bottom: 1.5rem;
-    }
-    .form-check input[type="checkbox"] {
-      width: 16px; height: 16px; flex-shrink: 0; cursor: pointer;
-      border: 1px solid rgba(184,151,90,0.3); background: var(--dark-2);
-      accent-color: var(--gold); margin-top: 2px;
-    }
-    .form-check label { font-size: 0.8rem; color: var(--muted); cursor: pointer; line-height: 1.5; }
-    .form-check label a { color: var(--gold); text-decoration: none; }
-    .btn-submit {
-      width: 100%; background: var(--gold); color: var(--dark);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
-      padding: 1.1rem; border: none; cursor: pointer; transition: all 0.3s;
-      position: relative; overflow: hidden;
-    }
-    .btn-submit:hover { background: var(--gold-light); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-    .form-message {
-      margin-top: 1rem; padding: 1rem 1.2rem;
-      font-size: 0.85rem; display: none;
-    }
-    .form-message.success {
-      background: rgba(184,151,90,0.1); border: 1px solid rgba(184,151,90,0.3);
-      color: var(--gold); display: block;
-    }
-    .form-message.error {
-      background: rgba(200,60,60,0.08); border: 1px solid rgba(200,60,60,0.25);
-      color: #e07070; display: block;
-    }
+      .brand-text strong{
+        font-size:1rem;
+        letter-spacing:0.2px;
+      }
 
-    /* ── CTA BAND ── */
-    #cta-band {
-      background: var(--gold); padding: 5rem 5vw;
-      display: flex; align-items: center; justify-content: space-between; gap: 3rem;
-      flex-wrap: wrap;
-    }
-    .cta-band-text h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 300;
-      color: var(--dark); line-height: 1.2;
-    }
-    .cta-band-text p { font-size: 0.95rem; color: rgba(14,14,14,0.65); margin-top: 0.6rem; font-weight: 300; }
-    .cta-band-action .btn-dark {
-      background: var(--dark); color: var(--gold);
-      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 1.1rem 2.5rem; border: none; cursor: pointer; text-decoration: none;
-      display: inline-block; transition: all 0.3s;
-    }
-    .cta-band-action .btn-dark:hover { background: var(--dark-3); transform: translateY(-2px); }
+      .brand-text span{
+        font-size:0.85rem;
+        color:var(--muted);
+      }
 
-    /* ── FOOTER ── */
-    footer { background: var(--dark); border-top: 1px solid rgba(184,151,90,0.15); }
-    .footer-top { padding: 5rem 5vw; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; }
-    .footer-brand .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem; font-weight: 400; color: var(--gold);
-      margin-bottom: 1.2rem; display: block;
-    }
-    .footer-brand p { font-size: 0.85rem; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 260px; }
-    .footer-col h4 {
-      font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--light); margin-bottom: 1.5rem;
-    }
-    .footer-col ul { list-style: none; }
-    .footer-col ul li { margin-bottom: 0.8rem; }
-    .footer-col ul li a {
-      font-size: 0.85rem; font-weight: 300; color: var(--muted);
-      text-decoration: none; transition: color 0.3s;
-    }
-    .footer-col ul li a:hover { color: var(--gold); }
-    .footer-bottom {
-      padding: 1.5rem 5vw; border-top: 1px solid rgba(184,151,90,0.08);
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
-    }
-    .footer-bottom p { font-size: 0.78rem; color: rgba(122,122,122,0.6); }
-    .footer-bottom-links { display: flex; gap: 2rem; }
-    .footer-bottom-links a { font-size: 0.78rem; color: rgba(122,122,122,0.6); text-decoration: none; transition: color 0.3s; }
-    .footer-bottom-links a:hover { color: var(--gold); }
+      .nav{
+        display:flex;
+        align-items:center;
+        gap:22px;
+      }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up { animation: fadeUp 0.7s ease forwards; }
-    .delay-1 { animation-delay: 0.15s; }
-    .delay-2 { animation-delay: 0.3s; }
-    .delay-3 { animation-delay: 0.45s; }
+      .nav a{
+        color:var(--muted);
+        font-size:0.95rem;
+        transition:0.25s ease;
+      }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 1024px) {
-      #hero { grid-template-columns: 1fr; min-height: auto; padding: 7rem 5vw 4rem; }
-      .hero-line { display: none; }
-      .hero-content { padding-right: 0; }
-      .hero-content h1 { font-size: 3.2rem; }
-      .hero-visual { margin-top: 4rem; }
-      .hero-img-bg { max-width: 420px; }
-      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 4rem; }
-      .services-grid { grid-template-columns: 1fr 1fr; }
-      .brands-grid { grid-template-columns: repeat(3, 1fr); }
-      .testimonials-grid { grid-template-columns: 1fr 1fr; }
-      .footer-top { grid-template-columns: 1fr 1fr; gap: 3rem; }
-    }
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-      #hero { padding: 6rem 5vw 3rem; }
-      .hero-content h1 { font-size: 2.6rem; }
-      .hero-stats { flex-direction: row; }
-      .services-grid { grid-template-columns: 1fr; }
-      .brands-grid { grid-template-columns: repeat(2, 1fr); }
-      .testimonials-grid { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr; }
-      #cta-band { text-align: center; justify-content: center; }
-      .footer-top { grid-template-columns: 1fr; }
-      .process-step { grid-template-columns: 60px 1fr; gap: 1.5rem; }
-      .about-accreditations { flex-wrap: wrap; }
-    }
-  </style>
-</head>
-<body>
+      .nav a:hover{
+        color:var(--text);
+      }
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">Audi<span>Sens</span></div>
-  <ul class="nav-links">
-    <li><a href="#about">À propos</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#process">Notre approche</a></li>
-    <li><a href="#testimonials">Témoignages</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <a class="nav-cta" href="#contact">Prendre rendez-vous</a>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
+      .btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        border:none;
+        cursor:pointer;
+        border-radius:999px;
+        padding:14px 22px;
+        font-weight:700;
+        font-size:0.95rem;
+        transition:transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      }
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-line"></div>
+      .btn:hover{
+        transform:translateY(-2px);
+      }
 
-  <div class="hero-content">
-    <p class="hero-tag fade-up">Centre audioprothèse certifié</p>
-    <h1 class="fade-up delay-1">
-      Redécouvrez<br/>le plaisir<br/>d'<em>entendre</em>
-    </h1>
-    <p class="fade-up delay-2">
-      Des solutions auditives sur mesure alliant technologie de pointe et expertise clinique pour améliorer votre qualité de vie. Chaque patient mérite une écoute exceptionnelle.
-    </p>
-    <div class="hero-btns fade-up delay-3">
-      <a class="btn-primary" href="#contact">Bilan auditif gratuit</a>
-      <a class="btn-outline" href="#services">Découvrir nos services</a>
-    </div>
-  </div>
+      .btn-primary{
+        background:linear-gradient(135deg, var(--primary), var(--secondary));
+        color:white;
+        box-shadow:0 14px 35px rgba(30,144,255,0.30);
+      }
 
-  <div class="hero-visual fade-up delay-2">
-    <div class="hero-image-wrap">
-      <div class="hero-img-bg">
-        <div class="hero-img-inner">
-          <!-- SVG illustration prothèse auditive -->
-          <svg class="hero-device-svg" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Oreille stylisée -->
-            <ellipse cx="100" cy="130" rx="68" ry="95" stroke="rgba(184,151,90,0.25)" stroke-width="1"/>
-            <!-- Corps principal -->
-            <path d="M72 95 C55 95 42 108 42 125 C42 145 52 162 68 172 C74 176 78 182 76 190 C74 200 68 208 72 215 C76 222 86 222 92 215 C100 205 100 190 94 178 C88 166 86 155 90 145 C94 135 100 128 108 125 C120 120 128 108 126 95 C124 82 112 75 100 75 C88 75 78 83 72 95Z" fill="rgba(184,151,90,0.08)" stroke="rgba(184,151,90,0.4)" stroke-width="1.5"/>
-            <!-- Écouteur -->
-            <rect x="88" y="58" width="24" height="38" rx="12" fill="rgba(184,151,90,0.15)" stroke="rgba(184,151,90,0.5)" stroke-width="1.5"/>
-            <circle cx="100" cy="77" r="6" fill="rgba(184,151,90,0.5)"/>
-            <circle cx="100" cy="77" r="3" fill="var(--gold)"/>
-            <!-- Tube -->
-            <path d="M88 80 C78 80 70 88 70 98" stroke="rgba(184,151,90,0.4)" stroke-width="2" stroke-linecap="round"/>
-            <!-- Détails tech -->
-            <line x1="94" y1="62" x2="106" y2="62" stroke="rgba(184,151,90,0.3)" stroke-width="1"/>
-            <line x1="94" y1="66" x2="106" y2="66" stroke="rgba(184,151,90,0.2)" stroke-width="0.8"/>
-            <!-- Onde sonore -->
-            <path d="M130 110 C140 118 140 132 130 140" stroke="rgba(184,151,90,0.4)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-            <path d="M138 104 C154 115 154 135 138 146" stroke="rgba(184,151,90,0.25)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            <path d="M146 98 C168 112 168 138 146 152" stroke="rgba(184,151,90,0.12)" stroke-width="1" stroke-linecap="round" fill="none"/>
-          </svg>
-        </div>
-        <div class="hero-corner tl"></div>
-        <div class="hero-corner br"></div>
-      </div>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="hero-stat-num">15+</span>
-        <span class="hero-stat-label">Années d'exp.</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat-num">2800</span>
-        <span class="hero-stat-label">Patients suivis</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat-num">98%</span>
-        <span class="hero-stat-label">Satisfaction</span>
-      </div>
-    </div>
-  </div>
-</section>
+      .btn-secondary{
+        background:rgba(255,255,255,0.07);
+        border:1px solid rgba(255,255,255,0.10);
+        color:white;
+      }
 
-<!-- MARQUEE -->
-<div class="marquee-section">
-  <div class="marquee-track">
-    <!-- double pour boucle infinie -->
-    <span class="marquee-item">Bilan auditif gratuit <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Prothèses auditives de pointe <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Appareils pris en charge par l'assurance <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Suivi personnalisé <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Audioprothésiste diplômé d'État <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Technologie Bluetooth & rechargeable <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Bilan auditif gratuit <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Prothèses auditives de pointe <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Appareils pris en charge par l'assurance <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Suivi personnalisé <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Audioprothésiste diplômé d'État <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Technologie Bluetooth & rechargeable <span class="marquee-dot"></span></span>
-  </div>
-</div>
+      .hero{
+        position:relative;
+        padding:80px 0 60px;
+      }
 
-<!-- ABOUT -->
-<section id="about" class="section">
-  <p class="section-label">Notre expertise</p>
-  <h2 class="section-title">Une approche <em>holistique</em><br/>de la santé auditive</h2>
+      .hero-grid{
+        display:grid;
+        grid-template-columns:1.15fr 0.85fr;
+        gap:32px;
+        align-items:center;
+      }
 
-  <div class="about-grid">
-    <div class="about-text">
-      <p>
-        Chez <strong>AudiSens</strong>, nous croyons que chaque patient a le droit à une solution auditive qui lui ressemble. Depuis plus de 15 ans, notre équipe d'audioprothésistes certifiés accompagne hommes et femmes de tous âges vers une meilleure qualité de vie.
-      </p>
-      <p>
-        Notre démarche repose sur un <strong>bilan audiologique complet</strong>, une sélection rigoureuse des technologies disponibles et un suivi post-appareillage continu. Nous ne vendons pas des appareils — nous offrons une <strong>transformation de vie</strong>.
-      </p>
+      .hero-content{
+        padding:18px 0;
+      }
 
-      <ul class="about-features">
-        <li>
-          <div class="feature-icon">✦</div>
-          <div>
-            <strong style="display:block;margin-bottom:0.3rem;color:var(--white)">Audioprothésistes diplômés d'État</strong>
-            Tous nos praticiens sont diplômés et régulièrement formés aux dernières innovations technologiques.
+      .eyebrow{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 16px;
+        border-radius:999px;
+        background:rgba(255,255,255,0.07);
+        border:1px solid rgba(255,255,255,0.08);
+        color:var(--accent);
+        margin-bottom:22px;
+        font-size:0.92rem;
+      }
+
+      .eyebrow-dot{
+        width:9px;
+        height:9px;
+        border-radius:50%;
+        background:var(--success);
+        box-shadow:0 0 0 5px rgba(56,211,159,0.16);
+      }
+
+      .hero h1{
+        font-size:clamp(2.4rem, 5vw, 4.7rem);
+        line-height:1.02;
+        letter-spacing:-0.04em;
+        margin-bottom:20px;
+      }
+
+      .hero h1 .gradient{
+        background:linear-gradient(135deg, #ffffff 10%, #8ce8ff 45%, #c7b4ff 100%);
+        -webkit-background-clip:text;
+        background-clip:text;
+        color:transparent;
+      }
+
+      .hero p{
+        font-size:1.08rem;
+        color:var(--muted);
+        line-height:1.8;
+        max-width:690px;
+        margin-bottom:28px;
+      }
+
+      .hero-points{
+        display:grid;
+        grid-template-columns:repeat(3, minmax(0, 1fr));
+        gap:14px;
+        margin:28px 0 34px;
+      }
+
+      .point{
+        padding:18px;
+        border-radius:18px;
+        background:var(--surface-2);
+        border:1px solid rgba(255,255,255,0.08);
+      }
+
+      .point strong{
+        display:block;
+        font-size:1rem;
+        margin-bottom:8px;
+      }
+
+      .point span{
+        color:var(--muted);
+        font-size:0.92rem;
+        line-height:1.6;
+      }
+
+      .hero-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:14px;
+      }
+
+      .glass-card{
+        position:relative;
+        background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+        border:1px solid rgba(255,255,255,0.12);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        overflow:hidden;
+      }
+
+      .glass-card::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:linear-gradient(135deg, rgba(255,255,255,0.10), transparent 35%);
+        pointer-events:none;
+      }
+
+      .form-card{
+        padding:30px;
+      }
+
+      .form-card h2{
+        font-size:1.55rem;
+        margin-bottom:10px;
+      }
+
+      .form-card p{
+        color:var(--muted);
+        line-height:1.7;
+        margin-bottom:22px;
+      }
+
+      .form-grid{
+        display:grid;
+        gap:14px;
+      }
+
+      .field{
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+      }
+
+      .field label{
+        font-size:0.92rem;
+        color:#dfeaf5;
+      }
+
+      .field input,
+      .field select,
+      .field textarea{
+        width:100%;
+        border:none;
+        outline:none;
+        color:var(--text);
+        background:rgba(255,255,255,0.07);
+        border:1px solid rgba(255,255,255,0.10);
+        border-radius:16px;
+        padding:15px 16px;
+        font-size:0.96rem;
+        transition:0.2s ease;
+      }
+
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus{
+        border-color:rgba(0,194,255,0.65);
+        box-shadow:0 0 0 4px rgba(0,194,255,0.12);
+      }
+
+      .field textarea{
+        min-height:120px;
+        resize:vertical;
+      }
+
+      .consent{
+        display:flex;
+        align-items:flex-start;
+        gap:12px;
+        padding-top:4px;
+      }
+
+      .consent input{
+        margin-top:4px;
+        transform:scale(1.1);
+      }
+
+      .consent label{
+        color:var(--muted);
+        line-height:1.6;
+        font-size:0.9rem;
+      }
+
+      .status{
+        display:none;
+        margin-top:14px;
+        padding:14px 16px;
+        border-radius:14px;
+        font-size:0.95rem;
+      }
+
+      .status.success{
+        display:block;
+        background:rgba(56,211,159,0.12);
+        color:#c8ffe8;
+        border:1px solid rgba(56,211,159,0.28);
+      }
+
+      .status.error{
+        display:block;
+        background:rgba(255,107,107,0.12);
+        color:#ffd6d6;
+        border:1px solid rgba(255,107,107,0.25);
+      }
+
+      section{
+        padding:38px 0;
+      }
+
+      .section-head{
+        margin-bottom:26px;
+      }
+
+      .section-head .tag{
+        display:inline-block;
+        padding:8px 14px;
+        border-radius:999px;
+        background:rgba(213,176,107,0.10);
+        color:#f3ddb3;
+        border:1px solid rgba(213,176,107,0.18);
+        font-size:0.88rem;
+        margin-bottom:14px;
+      }
+
+      .section-head h3{
+        font-size:clamp(1.8rem, 3vw, 3rem);
+        line-height:1.12;
+        letter-spacing:-0.03em;
+        margin-bottom:12px;
+      }
+
+      .section-head p{
+        color:var(--muted);
+        line-height:1.8;
+        max-width:760px;
+      }
+
+      .features-grid{
+        display:grid;
+        grid-template-columns:repeat(3, minmax(0, 1fr));
+        gap:18px;
+      }
+
+      .feature-card{
+        padding:24px;
+        border-radius:22px;
+        background:rgba(255,255,255,0.05);
+        border:1px solid rgba(255,255,255,0.08);
+        transition:transform 0.25s ease, border-color 0.25s ease;
+      }
+
+      .feature-card:hover{
+        transform:translateY(-4px);
+        border-color:rgba(0,194,255,0.22);
+      }
+
+      .feature-icon{
+        width:54px;
+        height:54px;
+        border-radius:16px;
+        display:grid;
+        place-items:center;
+        background:linear-gradient(135deg, rgba(0,194,255,0.22), rgba(123,97,255,0.22));
+        border:1px solid rgba(255,255,255,0.08);
+        margin-bottom:16px;
+        font-size:1.3rem;
+      }
+
+      .feature-card h4{
+        font-size:1.12rem;
+        margin-bottom:10px;
+      }
+
+      .feature-card p{
+        color:var(--muted);
+        line-height:1.75;
+        font-size:0.95rem;
+      }
+
+      .split{
+        display:grid;
+        grid-template-columns:0.95fr 1.05fr;
+        gap:24px;
+        align-items:stretch;
+      }
+
+      .premium-panel,
+      .steps-panel{
+        padding:28px;
+      }
+
+      .premium-panel{
+        background:
+          linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04)),
+          radial-gradient(circle at top right, rgba(0,194,255,0.15), transparent 35%);
+      }
+
+      .premium-panel h4,
+      .steps-panel h4{
+        font-size:1.45rem;
+        margin-bottom:16px;
+      }
+
+      .premium-panel p,
+      .steps-panel p{
+        color:var(--muted);
+        line-height:1.8;
+        margin-bottom:16px;
+      }
+
+      .premium-list{
+        list-style:none;
+        display:grid;
+        gap:12px;
+        margin-top:12px;
+      }
+
+      .premium-list li{
+        display:flex;
+        gap:12px;
+        align-items:flex-start;
+        color:#edf5fb;
+        background:rgba(255,255,255,0.04);
+        border:1px solid rgba(255,255,255,0.08);
+        padding:15px 16px;
+        border-radius:16px;
+      }
+
+      .premium-list li span{
+        color:var(--muted);
+        display:block;
+        margin-top:4px;
+        line-height:1.6;
+        font-size:0.93rem;
+      }
+
+      .step{
+        display:grid;
+        grid-template-columns:56px 1fr;
+        gap:14px;
+        align-items:flex-start;
+        padding:16px 0;
+        border-bottom:1px solid rgba(255,255,255,0.07);
+      }
+
+      .step:last-child{
+        border-bottom:none;
+      }
+
+      .step-number{
+        width:56px;
+        height:56px;
+        border-radius:18px;
+        display:grid;
+        place-items:center;
+        background:linear-gradient(135deg, var(--primary), var(--secondary));
+        font-weight:800;
+        box-shadow:0 12px 30px rgba(0,194,255,0.24);
+      }
+
+      .step h5{
+        font-size:1.05rem;
+        margin-bottom:8px;
+      }
+
+      .step p{
+        margin:0;
+        color:var(--muted);
+        line-height:1.7;
+      }
+
+      .cta{
+        padding:36px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:20px;
+        flex-wrap:wrap;
+      }
+
+      .cta h3{
+        font-size:clamp(1.6rem, 2.8vw, 2.5rem);
+        line-height:1.15;
+        margin-bottom:10px;
+      }
+
+      .cta p{
+        color:var(--muted);
+        line-height:1.8;
+        max-width:760px;
+      }
+
+      .footer{
+        padding:32px 0 46px;
+      }
+
+      .footer-inner{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:16px;
+        flex-wrap:wrap;
+        color:var(--muted);
+        font-size:0.92rem;
+        border-top:1px solid rgba(255,255,255,0.08);
+        padding-top:24px;
+      }
+
+      .reveal{
+        opacity:0;
+        transform:translateY(18px);
+        transition:0.7s ease;
+      }
+
+      .reveal.visible{
+        opacity:1;
+        transform:translateY(0);
+      }
+
+      @media (max-width: 1080px){
+        .hero-grid,
+        .split{
+          grid-template-columns:1fr;
+        }
+
+        .hero-points,
+        .features-grid{
+          grid-template-columns:repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 780px){
+        .nav{
+          display:none;
+        }
+
+        .header-inner{
+          justify-content:center;
+        }
+
+        .hero{
+          padding:54px 0 34px;
+        }
+
+        .hero h1{
+          font-size:2.5rem;
+        }
+
+        .hero-points,
+        .features-grid{
+          grid-template-columns:1fr;
+        }
+
+        .cta{
+          padding:26px;
+        }
+
+        .form-card,
+        .premium-panel,
+        .steps-panel{
+          padding:22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <div class="brand">
+          <div class="brand-badge">A</div>
+          <div class="brand-text">
+            <strong>AudioPro Excellence</strong>
+            <span>Centre auditif premium & accompagnement personnalisé</span>
           </div>
-        </li>
-        <li>
-          <div class="feature-icon">◈</div>
-          <div>
-            <strong style="display:block;margin-bottom:0.3rem;color:var(--white)">Matériel de test certifié ISO</strong>
-            Notre cabine audiométrique insonorisée garantit des mesures précises et reproductibles.
-          </div>
-        </li>
-        <li>
-          <div class="feature-icon">◎</div>
-          <div>
-            <strong style="display:block;margin-bottom:0.3rem;color:var(--white)">Prise en charge mutuelle complète</strong>
-            Nous vous accompagnons dans toutes vos démarches administratives pour maximiser votre remboursement.
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <div class="about-visual">
-      <div class="about-quote">
-        <div class="about-quote-mark">"</div>
-        <blockquote>
-          Retrouver les conversations avec mes petits-enfants, le chant des oiseaux le matin — ce n'est pas juste un appareil, c'est la vie qui reprend.
-        </blockquote>
-        <cite>— Fatima B., patiente depuis 3 ans</cite>
-      </div>
-      <div class="about-accreditations">
-        <div class="accred-badge">
-          <span class="num">100%</span>
-          <span class="lbl">Remboursé</span>
         </div>
-        <div class="accred-badge">
-          <span class="num">4 ans</span>
-          <span class="lbl">Garantie</span>
-        </div>
-        <div class="accred-badge">
-          <span class="num">30j</span>
-          <span class="lbl">Essai offert</span>
-        </div>
-        <div class="accred-badge">
-          <span class="num">24/7</span>
-          <span class="lbl">Assistance</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- SERVICES -->
-<section id="services" class="section">
-  <div class="services-intro">
-    <p class="section-label">Nos services</p>
-    <h2 class="section-title">Des soins <em>complets</em><br/>pour votre audition</h2>
-    <p>Du premier bilan à l'appareillage définitif, nous couvrons l'intégralité de votre parcours auditif avec un soin et une précision irréprochables.</p>
-  </div>
+        <nav class="nav">
+          <a href="#expertise">Expertise</a>
+          <a href="#solutions">Solutions</a>
+          <a href="#parcours">Parcours</a>
+          <a href="#contact">Contact</a>
+        </nav>
 
-  <div class="services-grid">
-    <div class="service-card">
-      <div class="service-num">01</div>
-      <div class="service-icon-wrap">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)">
-          <circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/>
-        </svg>
+        <a href="#contact" class="btn btn-secondary">Prendre rendez-vous</a>
       </div>
-      <h3>Bilan audiologique</h3>
-      <p>Évaluation complète de votre capacité auditive incluant audiométrie tonale et vocale, tympanométrie et tests de compréhension en milieu bruité.</p>
-      <div class="service-tags">
-        <span class="service-tag">Gratuit</span>
-        <span class="service-tag">Sans engagement</span>
-        <span class="service-tag">45 min</span>
-      </div>
-    </div>
+    </header>
 
-    <div class="service-card">
-      <div class="service-num">02</div>
-      <div class="service-icon-wrap">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)">
-          <path d="M9 3H5a2 2 0 00-2 2v4"/><path d="M21 3h-4"/><path d="M21 21h-4"/><path d="M3 21h4"/><circle cx="12" cy="12" r="4"/>
-        </svg>
-      </div>
-      <h3>Appareillage sur mesure</h3>
-      <p>Sélection personnalisée parmi plus de 200 modèles premium. Réglage numérique précis adapté à votre audiogramme et à votre mode de vie unique.</p>
-      <div class="service-tags">
-        <span class="service-tag">BTE / ITE / RIC</span>
-        <span class="service-tag">Bluetooth</span>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="service-num">03</div>
-      <div class="service-icon-wrap">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)">
-          <path d="M3 12h4l3 8 4-16 3 8h4"/>
-        </svg>
-      </div>
-      <h3>Suivi & adaptation</h3>
-      <p>Programme de suivi trimestriel avec réajustements progressifs, nettoyage professionnel et vérification de l'efficacité de l'appareillage en situation réelle.</p>
-      <div class="service-tags">
-        <span class="service-tag">Suivi vie entière</span>
-        <span class="service-tag">Télé-réglage</span>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="service-num">04</div>
-      <div class="service-icon-wrap">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-      </div>
-      <h3>Protection auditive</h3>
-      <p>Protections auditives sur mesure pour musiciens, travailleurs exposés, sportifs et dormeurs. Moulage en cabinet avec matériaux hypoallergéniques certifiés.</p>
-      <div class="service-tags">
-        <span class="service-tag">Sur mesure</span>
-        <span class="service-tag">Pro & loisirs</span>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="service-num">05</div>
-      <div class="service-icon-wrap">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)">
-          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h.01M12 7h.01M17 7h.01M7 12h.01M12 12h.01M17 12h.01M7 17h.01M12 17h.01"/>
-        </svg>
-      </div>
-      <h3>Acouphènes & hyperacousie</h3>
-      <p>Protocoles spécialisés de thérapie sonore TRT et programmes de désensibilisation pour les troubles de la perception sonore et les acouphènes chroniques.</p>
-      <div class="service-tags">
-        <span class="service-tag">TRT Certifié</span>
-        <span class="service-tag">Thérapie sonore</span>
-      </div>
-    </div>
-
-    <div class="service-card">
-      <div class="service-num">06</div>
-      <div class="service-icon-wrap">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-      </div>
-      <h3>Accompagnement famille</h3>
-      <p>Sessions de conseil pour les proches, ateliers de communication adaptée et programmes d'éducation thérapeutique du patient pour une intégration optimale.</p>
-      <div class="service-tags">
-        <span class="service-tag">Ateliers</span>
-        <span class="service-tag">Éducation thérapeutique</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROCESS -->
-<section id="process" class="section">
-  <p class="section-label">Notre méthode</p>
-  <h2 class="section-title">Votre parcours<br/>vers une meilleure <em>écoute</em></h2>
-
-  <div class="process-steps">
-    <div class="process-step">
-      <div class="step-num-wrap">
-        <div class="step-num">1</div>
-        <div class="step-connector"></div>
-      </div>
-      <div class="step-content">
-        <h3>Prise de contact & consultation initiale</h3>
-        <p>Lors de votre premier rendez-vous, nous échangeons sur vos habitudes de vie, vos difficultés auditives quotidiennes et vos attentes. Ce temps d'écoute est fondamental pour personnaliser votre prise en charge.</p>
-        <div class="step-detail">
-          <span class="step-chip">Anamnèse complète</span>
-          <span class="step-chip">Évaluation des besoins</span>
-          <span class="step-chip">Gratuit & sans engagement</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="process-step">
-      <div class="step-num-wrap">
-        <div class="step-num">2</div>
-        <div class="step-connector"></div>
-      </div>
-      <div class="step-content">
-        <h3>Bilan audiologique approfondi</h3>
-        <p>Notre cabine audiométrique insonorisée permet une mesure précise de votre seuil auditif sur toutes les fréquences. Les résultats sont analysés par notre audioprothésiste et comparés aux normes internationales.</p>
-        <div class="step-detail">
-          <span class="step-chip">Audiométrie tonale</span>
-          <span class="step-chip">Audiométrie vocale</span>
-          <span class="step-chip">Tympanométrie</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="process-step">
-      <div class="step-num-wrap">
-        <div class="step-num">3</div>
-        <div class="step-connector"></div>
-      </div>
-      <div class="step-content">
-        <h3>Essai & sélection de l'appareillage</h3>
-        <p>Nous vous proposons un essai gratuit de 30 jours avec les appareils les plus adaptés à votre profil. Vous portez les prothèses dans votre environnement réel — travail, famille, loisirs — avant toute décision.</p>
-        <div class="step-detail">
-          <span class="step-chip">30 jours d'essai</span>
-          <span class="step-chip">Toutes marques premium</span>
-          <span class="step-chip">Réglage personnalisé</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="process-step">
-      <div class="step-num-wrap">
-        <div class="step-num">4</div>
-        <div class="step-connector"></div>
-      </div>
-      <div class="step-content">
-        <h3>Appareillage définitif & remboursement</h3>
-        <p>Une fois votre choix finalisé, nous gérons intégralement vos dossiers de remboursement Sécurité sociale et mutuelle. Votre reste à charge est réduit au minimum, voire nul selon votre couverture.</p>
-        <div class="step-detail">
-          <span class="step-chip">100% remboursé possible</span>
-          <span class="step-chip">Tiers payant</span>
-          <span class="step-chip">Facilités de paiement</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="process-step">
-      <div class="step-num-wrap">
-        <div class="step-num">5</div>
-      </div>
-      <div class="step-content">
-        <h3>Suivi long terme & fidélisation</h3>
-        <p>Notre relation ne s'arrête pas à la vente. Des rendez-vous de contrôle réguliers, un service de nettoyage et d'entretien, ainsi qu'un support téléphonique dédié assurent votre confort dans la durée.</p>
-        <div class="step-detail">
-          <span class="step-chip">Contrôles trimestriels</span>
-          <span class="step-chip">Nettoyage offert</span>
-          <span class="step-chip">Garantie 4 ans</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- BRANDS -->
-<section id="brands" class="section" style="background:var(--dark-2);padding:6rem 5vw">
-  <div class="brands-header">
-    <p class="section-label" style="justify-content:center">Nos partenaires</p>
-    <h2 class="section-title" style="text-align:center">Marques <em>premium</em> disponibles</h2>
-    <p>Partenaires officiels des plus grandes marques mondiales d'audioprothèses.</p>
-  </div>
-  <div class="brands-grid">
-    <div class="brand-cell"><div class="brand-name">Phonak</div></div>
-    <div class="brand-cell"><div class="brand-name">Oticon</div></div>
-    <div class="brand-cell"><div class="brand-name">Signia</div></div>
-    <div class="brand-cell"><div class="brand-name">Widex</div></div>
-    <div class="brand-cell"><div class="brand-name">Starkey</div></div>
-    <div class="brand-cell"><div class="brand-name">GN ReSound</div></div>
-    <div class="brand-cell"><div class="brand-name">Bernafon</div></div>
-    <div class="brand-cell"><div class="brand-name">Unitron</div></div>
-    <div class="brand-cell"><div class="brand-name">Hansaton</div></div>
-    <div class="brand-cell"><div class="brand-name">Sonic</div></div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section id="testimonials" class="section">
-  <p class="section-label">Témoignages</p>
-  <h2 class="section-title">Ce que disent<br/> nos <em>patients</em></h2>
-
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="stars">
-        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
-      </div>
-      <blockquote>Après des années à faire répéter tout le monde, je peux enfin suivre une conversation dans un restaurant bruyant. L'équipe a été d'une patience et d'une compétence remarquables.</blockquote>
-      <div class="testimonial-author">
-        <div class="author-avatar">KM</div>
-        <div class="author-info">
-          <strong>Khalid M.</strong>
-          <span>Ingénieur, 58 ans · Patient depuis 2022</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="stars">
-        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
-      </div>
-      <blockquote>Le bilan gratuit m'a permis de découvrir une perte auditive que j'ignorais. Les appareils Phonak qu'ils m'ont choisis ont transformé ma vie professionnelle et personnelle.</blockquote>
-      <div class="testimonial-author">
-        <div class="author-avatar">SB</div>
-        <div class="author-info">
-          <strong>Sarah B.</strong>
-          <span>Enseignante, 44 ans · Patient depuis 2021</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="stars">
-        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
-      </div>
-      <blockquote>La connexion Bluetooth avec mon téléphone, c'est magique. Je passe mes appels directement dans les appareils. Le suivi est exemplaire, je me sens vraiment accompagné.</blockquote>
-      <div class="testimonial-author">
-        <div class="author-avatar">AM</div>
-        <div class="author-info">
-          <strong>Ahmed M.</strong>
-          <span>Retraité, 72 ans · Patient depuis 2020</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA BAND -->
-<section id="cta-band">
-  <div class="cta-band-text">
-    <h2>Votre bilan auditif gratuit<br/>vous attend aujourd'hui</h2>
-    <p>Aucune ordonnance requise — prenez rendez-vous en ligne en moins d'une minute.</p>
-  </div>
-  <div class="cta-band-action">
-    <a class="btn-dark" href="#contact">Réserver maintenant</a>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="section">
-  <p class="section-label">Nous contacter</p>
-  <h2 class="section-title">Prenez rendez-vous<br/>avec nos <em>experts</em></h2>
-
-  <div class="contact-grid">
-    <div class="contact-info">
-      <h3>Nous sommes là pour vous répondre</h3>
-      <p>Notre équipe est disponible du lundi au samedi pour répondre à vos questions et planifier votre consultation initiale. Chaque demande est traitée dans les 24 heures ouvrables.</p>
-
-      <ul class="contact-details">
-        <li>
-          <div class="contact-icon">📍</div>
-          <div class="contact-detail-text">
-            <strong>Adresse</strong>
-            <span>123 Avenue Mohammed V, Casablanca 20250</span>
-          </div>
-        </li>
-        <li>
-          <div class="contact-icon">📞</div>
-          <div class="contact-detail-text">
-            <strong>Téléphone</strong>
-            <span>+212 5 22 XX XX XX</span>
-          </div>
-        </li>
-        <li>
-          <div class="contact-icon">✉</div>
-          <div class="contact-detail-text">
-            <strong>Email</strong>
-            <span>contact@audisens.ma</span>
-          </div>
-        </li>
-        <li>
-          <div class="contact-icon">🕐</div>
-          <div class="contact-detail-text">
-            <strong>Horaires</strong>
-            <span>Lun–Ven : 8h30–18h30 · Sam : 9h–13h</span>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <div>
-      <div class="form-card">
-        <h3 class="form-title">Demande de rendez-vous</h3>
-        <p class="form-subtitle">Réponse garantie sous 24h ouvrables</p>
-
-        <div id="contactForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Prénom *</label>
-              <input type="text" name="prenom" placeholder="Votre prénom" required />
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-content reveal">
+            <div class="eyebrow">
+              <span class="eyebrow-dot"></span>
+              Audioprothèse haut de gamme · expertise, confort et discrétion
             </div>
-            <div class="form-group">
-              <label>Nom *</label>
-              <input type="text" name="nom" placeholder="Votre nom" required />
+
+            <h1>
+              Redonnez de la clarté à votre quotidien avec une
+              <span class="gradient">solution auditive premium</span>
+            </h1>
+
+            <p>
+              Nous accompagnons chaque patient avec une approche sur-mesure :
+              bilan personnalisé, appareillage discret, réglages de précision
+              et suivi attentif pour retrouver une écoute naturelle, confortable
+              et durable. Une expérience rassurante, élégante et profondément humaine.
+            </p>
+
+            <div class="hero-points">
+              <div class="point">
+                <strong>Diagnostic précis</strong>
+                <span>Analyse de vos besoins auditifs avec un accompagnement clair, professionnel et rassurant.</span>
+              </div>
+              <div class="point">
+                <strong>Technologie discrète</strong>
+                <span>Des aides auditives modernes, esthétiques et adaptées à votre style de vie.</span>
+              </div>
+              <div class="point">
+                <strong>Suivi premium</strong>
+                <span>Réglages, conseils et accompagnement pour un confort optimal sur le long terme.</span>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <a href="#contact" class="btn btn-primary">Demander un bilan</a>
+              <a href="#solutions" class="btn btn-secondary">Découvrir nos solutions</a>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Téléphone *</label>
-              <input type="tel" name="telephone" placeholder="+212 6 XX XX XX XX" required />
-            </div>
-            <div class="form-group">
-              <label>Âge</label>
-              <input type="number" name="age" placeholder="Votre âge" min="1" max="120" />
-            </div>
+          <div class="glass-card form-card reveal" id="contact">
+            <h2>Demande de rendez-vous</h2>
+            <p>
+              Laissez vos coordonnées. Nous vous recontactons pour étudier votre besoin
+              et vous proposer la solution auditive la plus adaptée.
+            </p>
+
+            <form id="leadForm" class="form-grid">
+              <div class="field">
+                <label for="nom">Nom complet *</label>
+                <input type="text" id="nom" name="nom" placeholder="Votre nom et prénom" required>
+              </div>
+
+              <div class="field">
+                <label for="telephone">Téléphone *</label>
+                <input type="tel" id="telephone" name="telephone" placeholder="06 00 00 00 00" required>
+              </div>
+
+              <div class="field">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" placeholder="vous@email.com" required>
+              </div>
+
+              <div class="field">
+                <label for="ville">Ville</label>
+                <input type="text" id="ville" name="ville" placeholder="Votre ville">
+              </div>
+
+              <div class="field">
+                <label for="besoin">Votre besoin</label>
+                <select id="besoin" name="besoin">
+                  <option value="">Sélectionner</option>
+                  <option value="Bilan auditif">Bilan auditif</option>
+                  <option value="Premier appareillage">Premier appareillage</option>
+                  <option value="Renouvellement">Renouvellement</option>
+                  <option value="Réglage / suivi">Réglage / suivi</option>
+                  <option value="Informations">Informations</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Décrivez brièvement votre besoin..."></textarea>
+              </div>
+
+              <div class="consent">
+                <input type="checkbox" id="consentement" name="consentement" value="Oui" required>
+                <label for="consentement">
+                  J’accepte que mes informations soient utilisées pour être recontacté(e)
+                  dans le cadre de ma demande.
+                </label>
+              </div>
+
+              <input type="hidden" name="source" value="Landing Page Audioprothèse">
+
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                Envoyer ma demande
+              </button>
+
+              <div id="statusBox" class="status"></div>
+            </form>
           </div>
-
-          <div class="form-group">
-            <label>Email *</label>
-            <input type="email" name="email" placeholder="votre@email.com" required />
-          </div>
-
-          <div class="form-group">
-            <label>Objet de la consultation *</label>
-            <select name="motif">
-              <option value="">— Sélectionnez —</option>
-              <option value="bilan_auditif">Bilan auditif gratuit</option>
-              <option value="appareillage">Appareillage / Prothèse auditive</option>
-              <option value="acouphenes">Acouphènes / Hyperacousie</option>
-              <option value="protection">Protection auditive sur mesure</option>
-              <option value="suivi">Suivi et entretien d'appareil</option>
-              <option value="enfant">Bilan pédiatrique</option>
-              <option value="autre">Autre demande</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Disponibilités préférées</label>
-            <select name="disponibilite">
-              <option value="">— Votre préférence —</option>
-              <option value="matin">Matin (8h30–12h)</option>
-              <option value="aprem">Après-midi (14h–18h30)</option>
-              <option value="samedi">Samedi matin</option>
-              <option value="flexible">Je suis flexible</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Message complémentaire</label>
-            <textarea name="message" placeholder="Décrivez brièvement vos symptômes ou vos questions..."></textarea>
-          </div>
-
-          <div class="form-check">
-            <input type="checkbox" name="rgpd" />
-            <label for="rgpd">J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <a href="#">politique de confidentialité</a>.</label>
-          </div>
-
-          <button class="btn-submit" id="submitBtn" onclick="submitForm()">
-            Envoyer ma demande
-          </button>
-
-          <div id="formMessage" class="form-message"></div>
         </div>
+      </section>
+
+      <section id="expertise">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="tag">Expertise</span>
+            <h3>Une expérience pensée pour inspirer confiance dès le premier contact</h3>
+            <p>
+              Une landing page haut de gamme doit rassurer, valoriser votre expertise
+              et convertir avec élégance. Cette structure met en avant votre savoir-faire,
+              la qualité de vos solutions et la simplicité de prise de rendez-vous.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <article class="feature-card reveal">
+              <div class="feature-icon">🎧</div>
+              <h4>Écoute sur-mesure</h4>
+              <p>
+                Chaque accompagnement commence par une compréhension précise de votre situation,
+                de votre confort auditif et de vos habitudes de vie.
+              </p>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-icon">✨</div>
+              <h4>Design discret</h4>
+              <p>
+                Nos solutions privilégient la discrétion, l’élégance et l’intégration naturelle
+                dans votre quotidien personnel et professionnel.
+              </p>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-icon">⚙️</div>
+              <h4>Réglages de précision</h4>
+              <p>
+                Un appareillage efficace repose sur des ajustements fins, réalisés avec soin
+                pour offrir un confort d’écoute durable.
+              </p>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-icon">🛡️</div>
+              <h4>Suivi rassurant</h4>
+              <p>
+                Un accompagnement régulier vous permet de progresser sereinement et d’obtenir
+                une solution parfaitement adaptée dans le temps.
+              </p>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-icon">💬</div>
+              <h4>Conseil clair</h4>
+              <p>
+                Nous expliquons chaque étape simplement afin que vous preniez votre décision
+                avec confiance, sans pression et en toute transparence.
+              </p>
+            </article>
+
+            <article class="feature-card reveal">
+              <div class="feature-icon">🏆</div>
+              <h4>Positionnement premium</h4>
+              <p>
+                Une image professionnelle forte, des couleurs raffinées et une mise en page
+                immersive renforcent votre crédibilité et la qualité perçue.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="solutions">
+        <div class="container split">
+          <div class="glass-card premium-panel reveal">
+            <h4>Des solutions auditives conçues pour votre confort</h4>
+            <p>
+              Notre approche associe innovation, esthétique et accompagnement humain pour
+              proposer une solution réellement adaptée à votre rythme de vie.
+            </p>
+
+            <ul class="premium-list">
+              <li>
+                <div>✔</div>
+                <div>
+                  <strong>Appareils discrets et élégants</strong>
+                  <span>Des formats pensés pour allier confort, discrétion et confiance au quotidien.</span>
+                </div>
+              </li>
+              <li>
+                <div>✔</div>
+                <div>
+                  <strong>Compréhension vocale optimisée</strong>
+                  <span>Une meilleure perception des échanges dans les environnements calmes comme dynamiques.</span>
+                </div>
+              </li>
+              <li>
+                <div>✔</div>
+                <div>
+                  <strong>Adaptation personnalisée</strong>
+                  <span>Chaque réglage est ajusté selon votre sensibilité, vos habitudes et vos attentes réelles.</span>
+                </div>
+              </li>
+              <li>
+                <div>✔</div>
+                <div>
+                  <strong>Accompagnement sur la durée</strong>
+                  <span>Un suivi sérieux permet de maintenir performance, confort et sérénité dans le temps.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="glass-card steps-panel reveal" id="parcours">
+            <h4>Votre parcours en 4 étapes</h4>
+            <p>
+              Une expérience fluide, rassurante et professionnelle pour convertir vos visiteurs
+              en rendez-vous qualifiés.
+            </p>
+
+            <div class="step">
+              <div class="step-number">1</div>
+              <div>
+                <h5>Prise de contact</h5>
+                <p>Le visiteur remplit le formulaire en quelques secondes depuis mobile ou ordinateur.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">2</div>
+              <div>
+                <h5>Enregistrement automatique</h5>
+                <p>Les informations sont envoyées directement vers votre Google Sheet via Apps Script.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">3</div>
+              <div>
+                <h5>Qualification du besoin</h5>
+                <p>Vous visualisez immédiatement le type de demande : bilan, appareillage, suivi ou information.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">4</div>
+              <div>
+                <h5>Relance rapide</h5>
+                <p>Vous recontactez le prospect rapidement avec une réponse claire, humaine et rassurante.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="glass-card cta reveal">
+            <div>
+              <h3>Valorisez votre cabinet avec une page premium qui convertit</h3>
+              <p>
+                Cette structure a été pensée pour présenter votre activité d’audioprothésiste
+                de manière élégante, moderne et crédible, tout en simplifiant la prise de contact.
+              </p>
+            </div>
+            <a href="#contact" class="btn btn-primary">Recevoir des demandes qualifiées</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span>© AudioPro Excellence — Landing page premium audioprothèse</span>
+        <span>Responsive · HTML/CSS intégrés · Google Apps Script + Google Sheets</span>
       </div>
-    </div>
-  </div>
-</section>
+    </footer>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <span class="logo">AudiSens</span>
-      <p>Centre audioprothèse de référence, alliant expertise médicale et technologie de pointe pour améliorer votre qualité de vie.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Services</h4>
-      <ul>
-        <li><a href="#services">Bilan auditif</a></li>
-        <li><a href="#services">Appareillage</a></li>
-        <li><a href="#services">Acouphènes</a></li>
-        <li><a href="#services">Protections sur mesure</a></li>
-        <li><a href="#services">Suivi & entretien</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Centre</h4>
-      <ul>
-        <li><a href="#about">Notre expertise</a></li>
-        <li><a href="#process">Notre approche</a></li>
-        <li><a href="#brands">Nos marques</a></li>
-        <li><a href="#testimonials">Témoignages</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Informations</h4>
-      <ul>
-        <li><a href="#">Remboursement</a></li>
-        <li><a href="#">Prises en charge</a></li>
-        <li><a href="#">Mentions légales</a></li>
-        <li><a href="#">Confidentialité</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 AudiSens. Tous droits réservés. Audioprothésiste diplômé d'État.</p>
-    <div class="footer-bottom-links">
-      <a href="#">Mentions légales</a>
-      <a href="#">CGV</a>
-      <a href="#">Cookies</a>
-    </div>
-  </div>
-</footer>
+    <script>
+      const form = document.getElementById('leadForm');
+      const statusBox = document.getElementById('statusBox');
+      const submitBtn = document.getElementById('submitBtn');
 
-<script>
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHWcEauclesBmbYIki00Wxb4Z9zaOueUf5esGfcAUXWzzdeXSws1VntRmZGC7rsO5EHw/exec"; // <--- COLLEZ L'URL ICI
+      function showStatus(message, type) {
+        statusBox.className = 'status ' + type;
+        statusBox.textContent = message;
+      }
 
-  document.getElementById('audiSensForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    const msg = document.getElementById('formMsg');
-    
-    btn.disabled = true;
-    btn.innerText = "Envoi en cours...";
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
+        statusBox.className = 'status';
+        statusBox.textContent = '';
 
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors', 
-      body: JSON.stringify(data)
-    })
-    .then(() => {
-      msg.innerText = "Merci ! Votre demande a été enregistrée.";
-      msg.style.display = "block";
-      msg.style.color = "#B8975A";
-      this.reset();
-    })
-    .catch(() => {
-      msg.innerText = "Erreur de connexion.";
-      msg.style.display = "block";
-    })
-    .finally(() => {
-      btn.disabled = false;
-      btn.innerText = "Prendre rendez-vous";
-    });
-  });
-</script>
-</body>
+        const formData = Object.fromEntries(new FormData(form).entries());
+
+        if (!formData.nom || !formData.telephone || !formData.email) {
+          showStatus('Veuillez remplir les champs obligatoires.', 'error');
+          return;
+        }
+
+        if (!formData.consentement) {
+          showStatus('Veuillez accepter le consentement pour continuer.', 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.textContent = 'Envoi en cours...';
+
+        google.script.run
+          .withSuccessHandler(function(response) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.textContent = 'Envoyer ma demande';
+
+            if (response && response.success) {
+              showStatus(response.message || 'Votre demande a bien été envoyée.', 'success');
+              form.reset();
+            } else {
+              showStatus((response && response.message) || 'Une erreur est survenue.', 'error');
+            }
+          })
+          .withFailureHandler(function(error) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.textContent = 'Envoyer ma demande';
+            showStatus('Erreur technique : ' + (error.message || 'merci de réessayer.'), 'error');
+          })
+          .submitLead(formData);
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+  </body>
 </html>
